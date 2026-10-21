@@ -6,6 +6,9 @@
   const here=location.pathname.split("/").pop()||"index.html";
   const panel=document.createElement("nav");panel.className="menu-panel";panel.id="menuPanel";panel.setAttribute("aria-label","Site menu");
   panel.innerHTML=links.map(([t,h])=>"<a href=\""+h+"\""+(h.startsWith("http")?" target=\"_blank\" rel=\"noopener\"":"")+(h===here?" class=\"is-current\" aria-current=\"page\"":"")+">"+t+"</a>").join("");
+  /* links already in the header nav are hidden on desktop by CSS (.in-nav); .md = nav hides it below 1050px */
+  const inNav=new Map([...document.querySelectorAll("#navLinks a")].map(a=>[a.getAttribute("href"),a.classList.contains("hide-md")]));
+  panel.querySelectorAll("a").forEach(a=>{const h=a.getAttribute("href");if(inNav.has(h)){a.classList.add("in-nav");if(inNav.get(h))a.classList.add("md")}});
   nav.appendChild(panel);
   const set=o=>{panel.classList.toggle("show",o);btn.setAttribute("aria-expanded",o);btn.setAttribute("aria-label",o?"Close menu":"Open menu")};
   btn.addEventListener("click",()=>set(!panel.classList.contains("show")));
@@ -194,7 +197,7 @@ document.querySelectorAll('.faq-question').forEach(q=>{const it=q.parentElement;
   const ctaHref=document.getElementById('contact')?'#contact':'contact.html#enquire';
   const dock=document.createElement('nav');
   dock.className='dock';dock.setAttribute('aria-label','Contact and social media');
-  dock.innerHTML='<a class="dock-logo" href="index.html" aria-label="i5 Housing & Properties home"><img src="logo.svg" alt=""></a>'+
+  dock.innerHTML='<a class="dock-logo" href="index.html" aria-label="i5 Housing & Properties home"><img src="images/i5-logo-transparent.png" alt=""></a>'+
     '<div class="dock-links">'+links.map(([k,label,href,icon])=>'<a class="dock-link" data-net="'+k+'" href="'+href+'"'+(href.startsWith('http')?' target="_blank" rel="noopener"':'')+' aria-label="'+label+'" title="'+label+'">'+icon+'<span>'+label+'</span></a>').join('')+'</div>'+
     '<a class="dock-cta" href="'+ctaHref+'"><span class="full">Book a Site Visit</span><span class="short">Site Visit</span><i class="ico-arrow" aria-hidden="true"></i></a>';
   document.body.appendChild(dock);document.body.classList.add('has-dock');
