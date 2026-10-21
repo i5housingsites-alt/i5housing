@@ -221,3 +221,15 @@ document.querySelectorAll('.faq-question').forEach(q=>{const it=q.parentElement;
     el.classList.add('reveal');io.observe(el);
   });
 })();
+
+/* ---------- Stats: count up from 0 when the row scrolls into view ---------- */
+(function(){
+  const els=[...document.querySelectorAll('.stat strong')];
+  if(!els.length||!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(!e.isIntersecting)return;io.unobserve(e.target);
+    const el=e.target,[,num,suf]=el.dataset.final.match(/^([\d.]+)(.*)$/),end=+num,t0=performance.now(),DUR=1800;
+    (function tick(t){const p=Math.min((t-t0)/DUR,1),v=end*(1-Math.pow(1-p,3));el.textContent=(p<1?Math.floor(v):end)+suf;if(p<1)requestAnimationFrame(tick)})(t0);
+  }),{threshold:.6});
+  els.forEach(el=>{const m=el.textContent.trim().match(/^([\d.]+)(.*)$/);if(!m)return;el.dataset.final=m[0];el.textContent='0'+m[2];io.observe(el)});
+})();

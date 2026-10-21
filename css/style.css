@@ -486,3 +486,4 @@ a:hover .ico-arrow,button:hover .ico-arrow,a:focus-visible .ico-arrow{transform:
 @media(max-width:1180px){.about-visual--md .about-stamp{left:-12px}}
 @media(max-width:780px){.about-visual--md .about-stamp{left:10px;bottom:20px;padding:14px 16px}.about-visual--md .about-stamp b{font-size:28px}.about-visual.about-visual--md:after{display:none}}
 @media(min-width:781px){.about-visual--md{order:2}}
+.stat strong{font-variant-numeric:tabular-nums}
