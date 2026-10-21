@@ -1,9 +1,27 @@
 /* i5 Housing & Properties — shared site script (every page) */
-/* ---------- Mobile menu ---------- */
+/* ---------- Hamburger menu (same list as the live site menu) ---------- */
 (function(){
-  const btn=document.getElementById('menuBtn'),nav=document.getElementById('navLinks');if(!btn||!nav)return;
-  btn.addEventListener('click',()=>{const open=nav.classList.toggle('show');btn.setAttribute('aria-expanded',open)});
-  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('show');btn.setAttribute('aria-expanded','false')}));
+  const btn=document.getElementById("menuBtn"),nav=document.querySelector(".header .nav");if(!btn||!nav)return;
+  const links=[["Home","index.html"],["Projects","index.html#projects"],["Contact Us","contact.html"],["i5 Builders","https://i5builders.in/"],["About Us","about.html"],["Blog","https://i5housing.com/blog/"],["MD Profile","about.html#founder"],["NRI Guidelines","nri.html"],["Awards","awards.html"],["Gallery","gallery.html"],["Completed Projects","completed-projects.html"],["Testimonials","testimonials.html"],["FAQ","faq.html"],["Careers","careers.html"],["Privacy","privacy.html"],["Terms and Conditions","terms.html"]];
+  const here=location.pathname.split("/").pop()||"index.html";
+  const panel=document.createElement("nav");panel.className="menu-panel";panel.id="menuPanel";panel.setAttribute("aria-label","Site menu");
+  panel.innerHTML=links.map(([t,h])=>"<a href=\""+h+"\""+(h.startsWith("http")?" target=\"_blank\" rel=\"noopener\"":"")+(h===here?" class=\"is-current\" aria-current=\"page\"":"")+">"+t+"</a>").join("");
+  nav.appendChild(panel);
+  const set=o=>{panel.classList.toggle("show",o);btn.setAttribute("aria-expanded",o);btn.setAttribute("aria-label",o?"Close menu":"Open menu")};
+  btn.addEventListener("click",()=>set(!panel.classList.contains("show")));
+  panel.addEventListener("click",e=>{if(e.target.closest("a"))set(false)});
+  document.addEventListener("click",e=>{if(!nav.contains(e.target))set(false)});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&panel.classList.contains("show")){set(false);btn.focus()}});
+})();
+/* ---------- Header: slide up while scrolling down, back down on scroll up or when scrolling stops ---------- */
+(function(){
+  const h=document.querySelector(".header");if(!h)return;
+  let last=scrollY,t=null;
+  addEventListener("scroll",()=>{
+    const y=scrollY,open=document.querySelector(".menu-panel.show");
+    if(y>last&&y>120&&!open)h.classList.add("is-up");else if(y<last)h.classList.remove("is-up");
+    last=y;clearTimeout(t);t=setTimeout(()=>h.classList.remove("is-up"),250);
+  },{passive:true});
 })();
 /* ---------- FAQ accordions ---------- */
 document.querySelectorAll('.faq-question').forEach(q=>{const it=q.parentElement;q.setAttribute('aria-expanded',it.classList.contains('open'));q.addEventListener('click',()=>{const o=it.classList.toggle('open');q.setAttribute('aria-expanded',o)})});
@@ -173,8 +191,7 @@ document.querySelectorAll('.faq-question').forEach(q=>{const it=q.parentElement;
     ['linkedin','LinkedIn','https://www.linkedin.com/company/i5-housing-properties/',ICON.linkedin],
     ['call','Call us','tel:7667005000','<img src="images/icons/phone.png" alt="">']
   ];
-  const headerCta=document.querySelector('.header .nav > .btn');
-  const ctaHref=headerCta?headerCta.getAttribute('href'):'contact.html';
+  const ctaHref=document.getElementById('contact')?'#contact':'contact.html#enquire';
   const dock=document.createElement('nav');
   dock.className='dock';dock.setAttribute('aria-label','Contact and social media');
   dock.innerHTML='<a class="dock-logo" href="index.html" aria-label="i5 Housing & Properties home"><img src="logo.svg" alt=""></a>'+
