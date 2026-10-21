@@ -187,3 +187,17 @@ document.querySelectorAll('.faq-question').forEach(q=>{const it=q.parentElement;
     new IntersectionObserver(es=>dock.classList.toggle('is-hidden',es[0].isIntersecting),{rootMargin:'0px 0px -60px 0px'}).observe(footer);
   }
 })();
+
+/* ---------- Scroll reveal: fade content up as it enters the viewport ---------- */
+(function(){
+  if(!('IntersectionObserver' in window))return;
+  const els=new Set(document.querySelectorAll('main section .container > *, main section [class*="-grid"] > *'));
+  /* don't double-animate a grid and its own children */
+  els.forEach(el=>{if(/-grid\b/.test(el.className)&&el.children.length)els.delete(el)});
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});
+  els.forEach(el=>{
+    const k=[...el.parentElement.children].indexOf(el);
+    el.style.setProperty('--rd',Math.min(k,5)*0.08+'s');
+    el.classList.add('reveal');io.observe(el);
+  });
+})();
